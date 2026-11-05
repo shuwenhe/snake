@@ -1,9 +1,9 @@
 CC = g++
 SC = s
 CFLAGS = -lncurses
-TARGET = snake
+TARGET_CPP = snake_ncurses
 TARGET_SIMPLE = snake_simple
-TARGET_S = snake_s
+TARGET_S = snake
 SRC = snake.cpp
 SRC_SIMPLE = snake_simple.cpp
 SRC_S = snake.s
@@ -11,7 +11,6 @@ SRC_S = snake.s
 .PHONY: all clean run run-simple run-s run-ncurses
 
 all: $(TARGET_S)
-	./$(TARGET_S)
 
 run: $(TARGET_S)
 	./$(TARGET_S)
@@ -22,8 +21,8 @@ run-s: $(TARGET_S)
 run-simple: $(TARGET_SIMPLE)
 	./$(TARGET_SIMPLE)
 
-run-ncurses: $(TARGET)
-	./$(TARGET)
+run-ncurses: $(TARGET_CPP)
+	./$(TARGET_CPP)
 
 help:
 	@echo "Snake Game - Makefile targets:"
@@ -34,8 +33,8 @@ help:
 	@echo "  make run-ncurses- Run ncurses C++ version (requires terminal)"
 	@echo "  make clean      - Remove compiled files"
 
-$(TARGET): $(SRC)
-	$(CC) -o $(TARGET) $(SRC) $(CFLAGS)
+$(TARGET_CPP): $(SRC)
+	$(CC) -o $(TARGET_CPP) $(SRC) $(CFLAGS)
 
 $(TARGET_SIMPLE): $(SRC_SIMPLE)
 	$(CC) -o $(TARGET_SIMPLE) $(SRC_SIMPLE)
@@ -44,4 +43,4 @@ $(TARGET_S): $(SRC_S)
 	$(SC) -o $(TARGET_S) $(SRC_S)
 
 clean:
-	rm -f $(TARGET) $(TARGET_SIMPLE) $(TARGET_S)
+	rm -f $(TARGET_CPP) $(TARGET_SIMPLE) $(TARGET_S)
