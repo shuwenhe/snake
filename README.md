@@ -1,6 +1,6 @@
 # Native S Snake
 
-The default game is `snake_from_example.s`, retained here as the independently maintained application integration for the S standard library. `snake.s` preserves the earlier global-state implementation. Both remain in this external project; the compiler repository contains the test harness and no game source.
+The default game is `snake_native.s`, retained here as the independently maintained application integration for the S standard library. `snake.s` preserves the earlier global-state implementation. Both remain in this external project; the compiler repository contains the test harness and no game source.
 
 ```
 make build

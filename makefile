@@ -1,5 +1,5 @@
 S_ROOT ?= /root/shuwen/s
-SOURCE ?= snake_from_example.s
+SOURCE ?= snake_native.s
 TARGET ?= snake
 
 .PHONY: all build run test integration help
