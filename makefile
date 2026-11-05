@@ -1,62 +1,26 @@
-CC = g++
-SC = s
-CFLAGS = -lncurses
-TARGET_CPP = snake_ncurses
-TARGET_SIMPLE = snake_simple
-TARGET_S = snake
-TARGET_S_LOGIC = snake_logic
-SRC = snake.cpp
-SRC_SIMPLE = snake_simple.cpp
-SRC_S = snake.s
-SRC_S_DISPLAY = snake_display.cpp
+S_ROOT ?= /root/shuwen/s
+SOURCE ?= snake_from_example.s
+TARGET ?= snake
 
-.PHONY: all clean run run-simple run-s run-ncurses run-logic run-display help
+.PHONY: all build run test integration help
+all: build
 
-S_COMPILER = /root/shuwen/s/bin/s_compiler
-S_WORK_DIR = /tmp/s-snake-build
+# This project retains independent legacy main programs. Resolve imports for
+# the selected executable only, using the actual native S compiler.
+build:
+	python3 $(S_ROOT)/misc/scripts/s-build.py $(S_ROOT) $(SOURCE) $(TARGET) --single-entry
 
-all: $(TARGET_S)
-	@./$(TARGET_S) || true
+run: build
+	./$(TARGET)
 
-run: $(TARGET_S)
-	./$(TARGET_S)
+test: build
+	./$(TARGET) --self-test
 
-run-display: $(TARGET_S_DISPLAY)
-	./$(TARGET_S_DISPLAY)
-
-run-logic: $(TARGET_S_LOGIC)
-	@./$(TARGET_S_LOGIC) || true
-
-run-simple: $(TARGET_SIMPLE)
-	./$(TARGET_SIMPLE)
-
-run-ncurses: $(TARGET_CPP)
-	./$(TARGET_CPP)
+integration: test
+	S_SNAKE_SOURCE=$(abspath $(SOURCE)) python3 $(S_ROOT)/test/stdlib-native/test_snake.py -v
 
 help:
-	@echo "Snake Game - Makefile targets:"
-	@echo "  make               - Compile and run S language version with display (default)"
-	@echo "  make run           - Run S language version"
-	@echo "  make run-display   - Run C++ ncurses display wrapper version"
-	@echo "  make run-simple    - Run simple C++ text version"
-	@echo "  make run-ncurses   - Run original ncurses C++ version"
-	@echo "  make clean         - Remove compiled files"
-
-$(TARGET_CPP): $(SRC)
-	$(CC) -o $(TARGET_CPP) $(SRC) $(CFLAGS)
-
-$(TARGET_SIMPLE): $(SRC_SIMPLE)
-	$(CC) -o $(TARGET_SIMPLE) $(SRC_SIMPLE)
-
-$(TARGET_S): $(SRC_S)
-	@mkdir -p $(S_WORK_DIR)
-	$(S_COMPILER) --compile-unit $(S_WORK_DIR)/main.sasm /root/shuwen/s/src/prelude/prelude.s /root/shuwen/s/src/result/result.s /root/shuwen/s/src/std/time.s /root/shuwen/s/src/std/terminal.s /root/shuwen/s/src/std/input.s $(SRC_S)
-	$(S_COMPILER) --emit-bin $(S_WORK_DIR)/main.sasm $(TARGET_S)
-
-$(TARGET_S_LOGIC): $(SRC_S)
-	@mkdir -p $(S_WORK_DIR)
-	$(S_COMPILER) --compile-unit $(S_WORK_DIR)/main-logic.sasm /root/shuwen/s/src/prelude/prelude.s /root/shuwen/s/src/result/result.s /root/shuwen/s/src/std/time.s /root/shuwen/s/src/std/terminal.s /root/shuwen/s/src/std/input.s $(SRC_S)
-	$(S_COMPILER) --emit-bin $(S_WORK_DIR)/main-logic.sasm $(TARGET_S_LOGIC)
-
-clean:
-	rm -f $(TARGET_CPP) $(TARGET_SIMPLE) $(TARGET_S) $(TARGET_S_LOGIC)
+	@echo 'make build       Build the native S game'
+	@echo 'make run         Run in an ANSI terminal (at least 38x16)'
+	@echo 'make test        Run deterministic headless game rules'
+	@echo 'make integration Run native PTY input/rendering/restoration tests'

@@ -1,7 +1,5 @@
 package main
-import "std.time"
-import "std.input"
-import "std.terminal"
+import ("std.time"; "std.terminal"; "std.input"; "std.prelude")
 
 prng_state := 1234567
 
