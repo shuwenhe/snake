@@ -1,4 +1,5 @@
 package main
+import "std.time"
 
 prng_state := 1234567
 
@@ -226,9 +227,9 @@ func run() int {
             break
         }
         
-        delay := 0
-        for delay < 1000000 {
-            delay = delay + 1
+        error := std.time.sleep_ms(100)
+        if error.code != 0 {
+            break
         }
     }
     

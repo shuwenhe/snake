@@ -407,3 +407,58 @@ Pure S language implementation. Based on classic Snake game mechanics.
 - 4ad8c49 - Random food placement with PRNG
 
 **All code is pure S language. No C, C++, or external dependencies.**
+
+## Integration with S Standard Library
+
+### std.time Integration (Session 2026-11-05)
+
+The Snake game now uses **`std.time.sleep_ms()`** for proper frame timing instead of busy-wait loops.
+
+**Before**: 1-million-iteration delay loop (CPU-wasteful, timing depends on CPU speed)
+```s
+for delay < 1000000 {
+    delay = delay + 1
+}
+```
+
+**After**: Real nanosleep via std.time
+```s
+import "std.time"
+error := std.time.sleep_ms(100)  // 10 FPS = 100ms per frame
+```
+
+**Benefits**:
+- ✅ CPU usage: Near zero during frame delay (was 100%)
+- ✅ Timing: Consistent and predictable (was hardware-dependent)
+- ✅ Responsiveness: Smooth gameplay on all systems
+- ✅ Energy: Minimal power consumption
+
+**Building with std.time**:
+```bash
+make clean && make
+```
+
+This uses the canonical S compiler with two-phase compilation:
+1. **Compile units**: `s_compiler --compile-unit main.sasm std/time.s snake.s`
+2. **Emit binary**: `s_compiler --emit-bin main.sasm snake`
+
+See `makefile` for full implementation.
+
+### Future: std.input Integration
+
+Once `std.input` intrinsics are implemented in the S compiler, the game will support:
+- Arrow keys for snake movement
+- WASD as alternative input
+- Escape to quit
+- Real PTY integration (no polling, no polling, event-driven)
+
+Current state of std.input:
+- ✅ Source code complete (166 lines)
+- ✅ Test framework ready
+- ⏳ Awaiting compiler intrinsic implementation (__std_read, __std_input_raw_mode, __std_input_restore_mode)
+
+---
+
+**Pure S Language Stack**: Snake → std.time → nanosleep() syscall → kernel
+
+No C, C++, ncurses, or external libraries. Entirely self-contained.

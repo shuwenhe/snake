@@ -12,6 +12,9 @@ SRC_S_DISPLAY = snake_display.cpp
 
 .PHONY: all clean run run-simple run-s run-ncurses run-logic run-display help
 
+S_COMPILER = /root/shuwen/s/bin/s_compiler
+S_WORK_DIR = /tmp/s-snake-build
+
 all: $(TARGET_S)
 	@./$(TARGET_S) || true
 
@@ -46,10 +49,14 @@ $(TARGET_SIMPLE): $(SRC_SIMPLE)
 	$(CC) -o $(TARGET_SIMPLE) $(SRC_SIMPLE)
 
 $(TARGET_S): $(SRC_S)
-	$(SC) -o $(TARGET_S) $(SRC_S)
+	@mkdir -p $(S_WORK_DIR)
+	$(S_COMPILER) --compile-unit $(S_WORK_DIR)/main.sasm /root/shuwen/s/src/std/time.s $(SRC_S)
+	$(S_COMPILER) --emit-bin $(S_WORK_DIR)/main.sasm $(TARGET_S)
 
 $(TARGET_S_LOGIC): $(SRC_S)
-	$(SC) -o $(TARGET_S_LOGIC) $(SRC_S)
+	@mkdir -p $(S_WORK_DIR)
+	$(S_COMPILER) --compile-unit $(S_WORK_DIR)/main-logic.sasm /root/shuwen/s/src/std/time.s $(SRC_S)
+	$(S_COMPILER) --emit-bin $(S_WORK_DIR)/main-logic.sasm $(TARGET_S_LOGIC)
 
 clean:
 	rm -f $(TARGET_CPP) $(TARGET_SIMPLE) $(TARGET_S) $(TARGET_S_LOGIC)
