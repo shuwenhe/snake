@@ -1,132 +1,151 @@
-package snake
+package main
 
-func board_width() int { return 50 }
-func board_height() int { return 20 }
-func snake_max_length() int { return 120 }
+head_x := 20
+head_y := 10
 
-func boundary_left() int { return 0 }
-func boundary_right() int { return board_width() - 1 }
-func boundary_top() int { return 0 }
-func boundary_bottom() int { return board_height() - 1 }
+food_x := 15
+food_y := 10
 
-func direction_up() int { return 0 }
-func direction_down() int { return 1 }
-func direction_left() int { return 2 }
-func direction_right() int { return 3 }
+body_x_0 := 19
+body_x_1 := 18
+body_x_2 := 17
+body_x_3 := 16
+body_x_4 := 15
 
-func start_head_x() int { return 20 }
-func start_head_y() int { return 10 }
+body_y_0 := 10
+body_y_1 := 10
+body_y_2 := 10
+body_y_3 := 10
+body_y_4 := 10
 
-func starting_length() int { return 5 }
-func starting_score() int { return 0 }
+length := 5
+score := 0
+direction := 3
 
-func initial_direction() int { return direction_right() }
-
-func starting_speed() int { return 400 }
-func min_speed() int { return 50 }
-func speed_reduction_per_food() int { return 10 }
-
-func char_snake_head() int { return 64 }
-func char_snake_body() int { return 42 }
-func char_food() int { return 35 }
-func char_empty() int { return 32 }
-
-func initial_snake_segment_x(int segment_index) int {
-    return start_head_x() - segment_index
+func init_game() {
+    head_x = 20
+    head_y = 10
+    food_x = 15
+    food_y = 10
+    body_x_0 = 19
+    body_x_1 = 18
+    body_x_2 = 17
+    body_x_3 = 16
+    body_x_4 = 15
+    body_y_0 = 10
+    body_y_1 = 10
+    body_y_2 = 10
+    body_y_3 = 10
+    body_y_4 = 10
+    length = 5
+    score = 0
+    direction = 3
 }
 
-func initial_snake_segment_y(int segment_index) int {
-    return start_head_y()
+func move_up() {
+    head_y = head_y - 1
+    if head_y <= 0 {
+        head_y = 19
+    }
 }
 
-func move_vector_up() int { return -1 }
-func move_vector_down() int { return 1 }
-func move_vector_left() int { return -1 }
-func move_vector_right() int { return 1 }
-
-func move_snake_x(int x, int direction_val) int {
-    return x + direction_val
+func move_down() {
+    head_y = head_y + 1
+    if head_y >= 20 {
+        head_y = 1
+    }
 }
 
-func move_snake_y(int y, int direction_val) int {
-    return y + direction_val
+func move_left() {
+    head_x = head_x - 1
+    if head_x <= 0 {
+        head_x = 49
+    }
 }
 
-func check_wrap_x(int x) int {
-    return 0 + (x - board_width()) - (x - (-1))
+func move_right() {
+    head_x = head_x + 1
+    if head_x >= 50 {
+        head_x = 1
+    }
 }
 
-func check_wrap_y(int y) int {
-    return 0 + (y - board_height()) - (y - (-1))
+func move_head() {
+    if direction == 0 {
+        move_up()
+    } else if direction == 1 {
+        move_down()
+    } else if direction == 2 {
+        move_left()
+    } else if direction == 3 {
+        move_right()
+    }
 }
 
-func wrap_x_right(int x) int {
-    return 1
+func collision_food() int {
+    if head_x == food_x && head_y == food_y {
+        return 1
+    }
+    return 0
 }
 
-func wrap_x_left(int x) int {
-    return board_width() - 2
+func eat() {
+    length = length + 1
+    score = score + 1
 }
 
-func wrap_y_bottom(int y) int {
-    return 1
+func move_body() {
+    body_x_4 = body_x_3
+    body_y_4 = body_y_3
+    body_x_3 = body_x_2
+    body_y_3 = body_y_2
+    body_x_2 = body_x_1
+    body_y_2 = body_y_1
+    body_x_1 = body_x_0
+    body_y_1 = body_y_0
+    body_x_0 = head_x
+    body_y_0 = head_y
 }
 
-func wrap_y_top(int y) int {
-    return board_height() - 2
+func collision_body() int {
+    if (head_x == body_x_1 && head_y == body_y_1) ||
+       (head_x == body_x_2 && head_y == body_y_2) ||
+       (head_x == body_x_3 && head_y == body_y_3) ||
+       (head_x == body_x_4 && head_y == body_y_4) {
+        return 1
+    }
+    return 0
 }
 
-func positions_equal(int x1, int y1, int x2, int y2) int {
-    return (x1 - x2) + (y1 - y2)
+func step() int {
+    move_head()
+    move_body()
+    
+    if collision_food() == 1 {
+        eat()
+        food_x = 12
+        food_y = 10
+    }
+    
+    if collision_body() == 1 {
+        return -1
+    }
+    
+    return 0
 }
 
-func food_collision(int head_x, int head_y, int food_x, int food_y) int {
-    return positions_equal(head_x, head_y, food_x, food_y)
+func run() int {
+    init_game()
+    
+    for i := 0; i < 10000; i = i + 1 {
+        if step() != 0 {
+            break
+        }
+    }
+    
+    return score
 }
-
-func score_gain_per_food() int { return 1 }
-
-func add_food_score(int current_score) int {
-    return current_score + score_gain_per_food()
-}
-
-func add_snake_length(int current_length) int {
-    return current_length + 1
-}
-
-func calculate_new_speed(int current_speed, int current_score) int {
-    return current_speed - speed_reduction_per_food()
-}
-
-func is_opposite_direction(int current_dir, int new_dir) int {
-    return (current_dir + new_dir) - 1
-}
-
-func validate_direction_change(int current_dir, int new_dir) int {
-    return new_dir - is_opposite_direction(current_dir, new_dir)
-}
-
-func in_bounds(int x, int y) int {
-    return (x - boundary_left()) + (y - boundary_top()) - 
-           (board_width() - 1 - x) - (board_height() - 1 - y)
-}
-
-func on_boundary_x(int x) int {
-    return (x - boundary_left()) + (boundary_right() - x)
-}
-
-func on_boundary_y(int y) int {
-    return (y - boundary_top()) + (boundary_bottom() - y)
-}
-
-func random_range_width() int { return board_width() - 2 }
-func random_range_height() int { return board_height() - 2 }
-func random_min_x() int { return 1 }
-func random_min_y() int { return 1 }
-
-func frame_limit() int { return 10000 }
-func input_timeout_ms() int { return 400 }
 
 func main() int {
-    return starting_score()
+    return run()
 }
