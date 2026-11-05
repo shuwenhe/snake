@@ -1,5 +1,7 @@
 package main
 
+prng_state := 1234567
+
 head_x := 20
 head_y := 10
 food_x := 15
@@ -21,6 +23,7 @@ length := 5
 score := 0
 direction := 3
 step_num := 0
+delay_count := 0
 
 func init_game() {
     head_x = 20
@@ -41,6 +44,44 @@ func init_game() {
     score = 0
     direction = 3
     step_num = 0
+}
+
+func prng() int {
+    prng_state = (prng_state * 1103515245 + 12345) & 2147483647
+    return prng_state
+}
+
+func place_food() {
+    attempts := 0
+    for attempts < 50 {
+        food_x = 1 + (prng() % 48)
+        food_y = 1 + (prng() % 18)
+        
+        valid := 1
+        if food_x == head_x && food_y == head_y {
+            valid = 0
+        }
+        if food_x == body_x_0 && food_y == body_y_0 {
+            valid = 0
+        }
+        if food_x == body_x_1 && food_y == body_y_1 {
+            valid = 0
+        }
+        if food_x == body_x_2 && food_y == body_y_2 {
+            valid = 0
+        }
+        if food_x == body_x_3 && food_y == body_y_3 {
+            valid = 0
+        }
+        if food_x == body_x_4 && food_y == body_y_4 {
+            valid = 0
+        }
+        
+        if valid == 1 {
+            return
+        }
+        attempts = attempts + 1
+    }
 }
 
 func move_up() {
@@ -112,8 +153,7 @@ func collision_self() int {
 func eat() {
     length = length + 1
     score = score + 1
-    food_x = 10 + (step_num % 30)
-    food_y = 3 + ((step_num / 30) % 14)
+    place_food()
 }
 
 func render_board() {
@@ -192,6 +232,11 @@ func run() int {
     for i := 0; i < 10000; i = i + 1 {
         if step() != 0 {
             break
+        }
+        
+        delay := 0
+        for delay < 1000000 {
+            delay = delay + 1
         }
     }
     
