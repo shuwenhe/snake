@@ -11,6 +11,7 @@ SRC_S = snake.s
 .PHONY: all clean run run-simple run-s run-ncurses
 
 all: $(TARGET_S)
+	@./$(TARGET_S) || true
 
 run: $(TARGET_S)
 	./$(TARGET_S)
