@@ -1,9 +1,25 @@
 package main
-import ("std.time"; "std.terminal"; "std.input"; "std.prelude")
+
+import (
+    "std.time"
+    "std.terminal"
+    "std.input"
+    "std.prelude"
+)
+
 extern "intrinsic" func host_args() string[]
 
-// Board cells are y * 20 + x. Body is head first; arrays use S value semantics.
-struct game { int[] body, int direction, int food, int seed, bool alive, bool won, int removed, int score }
+struct game {
+    int[] body,
+    int direction,
+    int food,
+    int seed,
+    bool alive,
+    bool won,
+    int removed,
+    int score
+}
+
 func occupied(int[] body, int cell) bool {
     index := 0
     while index < len(body) {
@@ -12,6 +28,7 @@ func occupied(int[] body, int cell) bool {
     }
     return false
 }
+
 func place_food(game* state) {
     if len(state.body) == 240 { state.food = -1; state.won = true; return }
     state.seed = (state.seed * 1103515245 + 12345) & 2147483647
@@ -19,11 +36,13 @@ func place_food(game* state) {
     while occupied(state.body, candidate) { candidate = (candidate + 1) % 240 }
     state.food = candidate
 }
+
 func new_game() game {
     state := game { body: int[]{125,124,123}, direction: 0, food: -1, seed: 7, alive: true, won: false, removed: -1, score: 0 }
     place_food(state*)
     return state
 }
+
 func turn(int current, string kind) int {
     next := current
     if kind == "right" { next = 0 }
@@ -33,6 +52,7 @@ func turn(int current, string kind) int {
     if (next + 2) % 4 == current { return current }
     return next
 }
+
 func advance(game* state) {
     if !state.alive || state.won { return }
     head := state.body[0]
@@ -60,6 +80,7 @@ func advance(game* state) {
     state.body = body
     if growing { state.score = state.score + 1; place_food(state*) }
 }
+
 func rules_test() int {
     state := new_game()
     duplicate := new_game()
@@ -87,16 +108,19 @@ func rules_test() int {
     println("snake rules: PASS")
     return 0
 }
+
 func draw_at(std.terminal.output_buffer* output, int row, int column, string text) int {
     position, error := std.terminal.cursor_position(row, column)
     if error.code != 0 { return error.code }
     sequence := position + text
     return std.terminal.buffer_append(output*, sequence).code
 }
+
 func draw_cell(std.terminal.output_buffer* output, int cell, string text) int {
     if cell < 0 { return 0 }
     return draw_at(output*, cell / 20 + 2, cell % 20 + 2, text)
 }
+
 func initial_scene(std.terminal.output_buffer* output, game state) int {
     row := 1
     while row <= 14 {
@@ -118,6 +142,7 @@ func initial_scene(std.terminal.output_buffer* output, game state) int {
     if status != 0 { return status }
     return std.terminal.flush(output*).code
 }
+
 func play(std.terminal.output_buffer* output, std.input.reader* keyboard) int {
     state := new_game()
     status := initial_scene(output*, state)
@@ -157,6 +182,7 @@ func play(std.terminal.output_buffer* output, std.input.reader* keyboard) int {
     }
     return 0
 }
+
 func main() int {
     args := host_args()
     if len(args) > 1 && args[1] == "--self-test" { return rules_test() }
