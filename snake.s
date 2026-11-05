@@ -117,6 +117,70 @@ func collision_body() int {
     return 0
 }
 
+func get_head_x() int {
+    return head_x
+}
+
+func get_head_y() int {
+    return head_y
+}
+
+func get_food_x() int {
+    return food_x
+}
+
+func get_food_y() int {
+    return food_y
+}
+
+func get_score() int {
+    return score
+}
+
+func get_length() int {
+    return length
+}
+
+func get_body_x_0() int {
+    return body_x_0
+}
+
+func get_body_x_1() int {
+    return body_x_1
+}
+
+func get_body_x_2() int {
+    return body_x_2
+}
+
+func get_body_x_3() int {
+    return body_x_3
+}
+
+func get_body_x_4() int {
+    return body_x_4
+}
+
+func get_body_y_0() int {
+    return body_y_0
+}
+
+func get_body_y_1() int {
+    return body_y_1
+}
+
+func get_body_y_2() int {
+    return body_y_2
+}
+
+func get_body_y_3() int {
+    return body_y_3
+}
+
+func get_body_y_4() int {
+    return body_y_4
+}
+
 func step() int {
     move_head()
     move_body()
@@ -124,7 +188,7 @@ func step() int {
     if collision_food() == 1 {
         eat()
         food_x = 12
-        food_y = 10
+        food_y = 5
     }
     
     if collision_body() == 1 {
@@ -137,7 +201,7 @@ func step() int {
 func run() int {
     init_game()
     
-    for i := 0; i < 10000; i = i + 1 {
+    for i := 0; i < 1000; i = i + 1 {
         if step() != 0 {
             break
         }
