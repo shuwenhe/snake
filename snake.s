@@ -2,7 +2,6 @@ package main
 
 head_x := 20
 head_y := 10
-
 food_x := 15
 food_y := 10
 
@@ -21,6 +20,7 @@ body_y_4 := 10
 length := 5
 score := 0
 direction := 3
+step_num := 0
 
 func init_game() {
     head_x = 20
@@ -40,6 +40,7 @@ func init_game() {
     length = 5
     score = 0
     direction = 3
+    step_num = 0
 }
 
 func move_up() {
@@ -117,68 +118,12 @@ func collision_body() int {
     return 0
 }
 
-func get_head_x() int {
-    return head_x
-}
-
-func get_head_y() int {
-    return head_y
-}
-
-func get_food_x() int {
-    return food_x
-}
-
-func get_food_y() int {
-    return food_y
-}
-
-func get_score() int {
-    return score
-}
-
-func get_length() int {
-    return length
-}
-
-func get_body_x_0() int {
-    return body_x_0
-}
-
-func get_body_x_1() int {
-    return body_x_1
-}
-
-func get_body_x_2() int {
-    return body_x_2
-}
-
-func get_body_x_3() int {
-    return body_x_3
-}
-
-func get_body_x_4() int {
-    return body_x_4
-}
-
-func get_body_y_0() int {
-    return body_y_0
-}
-
-func get_body_y_1() int {
-    return body_y_1
-}
-
-func get_body_y_2() int {
-    return body_y_2
-}
-
-func get_body_y_3() int {
-    return body_y_3
-}
-
-func get_body_y_4() int {
-    return body_y_4
+func render_board() {
+    println("==================== SNAKE GAME ====================")
+    println("Head: Move around the board")
+    println("Food: Eat to grow")
+    println("Steps completed")
+    println("==================================================")
 }
 
 func step() int {
@@ -195,17 +140,35 @@ func step() int {
         return -1
     }
     
+    step_num = step_num + 1
+    
     return 0
 }
 
 func run() int {
     init_game()
     
-    for i := 0; i < 1000; i = i + 1 {
+    println("====================================================")
+    println("        S Language SNAKE GAME Implementation")
+    println("====================================================")
+    println("")
+    
+    render_board()
+    
+    println("")
+    
+    for i := 0; i < 10000; i = i + 1 {
         if step() != 0 {
             break
         }
     }
+    
+    println("")
+    println("================== GAME OVER ======================")
+    println("Final Score:")
+    println("Steps Taken:")
+    println("Length Reached:")
+    println("==================================================")
     
     return score
 }
