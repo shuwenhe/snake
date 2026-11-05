@@ -50,12 +50,12 @@ $(TARGET_SIMPLE): $(SRC_SIMPLE)
 
 $(TARGET_S): $(SRC_S)
 	@mkdir -p $(S_WORK_DIR)
-	$(S_COMPILER) --compile-unit $(S_WORK_DIR)/main.sasm /root/shuwen/s/src/std/time.s $(SRC_S)
+	$(S_COMPILER) --compile-unit $(S_WORK_DIR)/main.sasm /root/shuwen/s/src/prelude/prelude.s /root/shuwen/s/src/result/result.s /root/shuwen/s/src/std/time.s /root/shuwen/s/src/std/terminal.s /root/shuwen/s/src/std/input.s $(SRC_S)
 	$(S_COMPILER) --emit-bin $(S_WORK_DIR)/main.sasm $(TARGET_S)
 
 $(TARGET_S_LOGIC): $(SRC_S)
 	@mkdir -p $(S_WORK_DIR)
-	$(S_COMPILER) --compile-unit $(S_WORK_DIR)/main-logic.sasm /root/shuwen/s/src/std/time.s $(SRC_S)
+	$(S_COMPILER) --compile-unit $(S_WORK_DIR)/main-logic.sasm /root/shuwen/s/src/prelude/prelude.s /root/shuwen/s/src/result/result.s /root/shuwen/s/src/std/time.s /root/shuwen/s/src/std/terminal.s /root/shuwen/s/src/std/input.s $(SRC_S)
 	$(S_COMPILER) --emit-bin $(S_WORK_DIR)/main-logic.sasm $(TARGET_S_LOGIC)
 
 clean:

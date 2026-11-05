@@ -1,5 +1,7 @@
 package main
 import "std.time"
+import "std.input"
+import "std.terminal"
 
 prng_state := 1234567
 
@@ -217,12 +219,45 @@ func run() int {
     println("")
     println("==================== SNAKE GAME ====================")
     println("Head: @  Body: o  Food: *  Max length: 20")
+    println("Use WASD or Arrow Keys to move. Q to quit.")
     println("==================================================")
     println("")
+    
+    session, session_error := std.input.raw_mode(0)
+    if session_error.code != 0 {
+        println("Failed to enter raw mode")
+        return 1
+    }
+    
+    reader, reader_error := std.input.new_reader(0)
+    if reader_error.code != 0 {
+        std.input.restore(&session)
+        println("Failed to create reader")
+        return 1
+    }
     
     direction = 3
     
     for i := 0; i < 10000; i = i + 1 {
+        key, key_error := std.input.read_nonblocking(&reader)
+        if key_error.code == 0 {
+            if key.kind == "up" {
+                if direction != 1 { direction = 0 }
+            } else if key.kind == "down" {
+                if direction != 0 { direction = 1 }
+            } else if key.kind == "left" {
+                if direction != 3 { direction = 2 }
+            } else if key.kind == "right" {
+                if direction != 2 { direction = 3 }
+            } else if key.kind == "key" {
+                if key.code == 113 || key.code == 81 {
+                    break
+                }
+            } else if key.kind == "eof" {
+                break
+            }
+        }
+        
         if step() != 0 {
             break
         }
@@ -232,6 +267,8 @@ func run() int {
             break
         }
     }
+    
+    std.input.restore(&session)
     
     println("")
     println("================== GAME OVER ======================")
