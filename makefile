@@ -10,13 +10,16 @@ SRC_SIMPLE = snake_simple.cpp
 SRC_S = snake.s
 SRC_S_DISPLAY = snake_display.cpp
 
-.PHONY: all clean run run-simple run-s run-ncurses run-logic help
+.PHONY: all clean run run-simple run-s run-ncurses run-logic run-display help
 
 all: $(TARGET_S)
 	@./$(TARGET_S) || true
 
 run: $(TARGET_S)
 	./$(TARGET_S)
+
+run-display: $(TARGET_S_DISPLAY)
+	./$(TARGET_S_DISPLAY)
 
 run-logic: $(TARGET_S_LOGIC)
 	@./$(TARGET_S_LOGIC) || true
@@ -29,11 +32,11 @@ run-ncurses: $(TARGET_CPP)
 
 help:
 	@echo "Snake Game - Makefile targets:"
-	@echo "  make               - Compile and run interactive ncurses version (default)"
-	@echo "  make run           - Run interactive ncurses version"
-	@echo "  make run-logic     - Run pure S language logic (headless, no display)"
+	@echo "  make               - Compile and run S language version with display (default)"
+	@echo "  make run           - Run S language version"
+	@echo "  make run-display   - Run C++ ncurses display wrapper version"
 	@echo "  make run-simple    - Run simple C++ text version"
-	@echo "  make run-ncurses   - Run ncurses C++ version"
+	@echo "  make run-ncurses   - Run original ncurses C++ version"
 	@echo "  make clean         - Remove compiled files"
 
 $(TARGET_CPP): $(SRC)
@@ -42,8 +45,8 @@ $(TARGET_CPP): $(SRC)
 $(TARGET_SIMPLE): $(SRC_SIMPLE)
 	$(CC) -o $(TARGET_SIMPLE) $(SRC_SIMPLE)
 
-$(TARGET_S): $(SRC_S_DISPLAY)
-	$(CC) -o $(TARGET_S) $(SRC_S_DISPLAY) $(CFLAGS)
+$(TARGET_S): $(SRC_S)
+	$(SC) -o $(TARGET_S) $(SRC_S)
 
 $(TARGET_S_LOGIC): $(SRC_S)
 	$(SC) -o $(TARGET_S_LOGIC) $(SRC_S)
